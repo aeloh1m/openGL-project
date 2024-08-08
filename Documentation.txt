@@ -1,0 +1,11 @@
+===================================================
+
+Ok for this game I will be implementing C language. 
+Libraries: 
+
+glfw
+
+cglm
+
+
+--verbose command
