@@ -25,7 +25,8 @@ int main(void)
     {
         /* Render here */
 
-        displayTriangle();
+
+        displaySquare();
 
         /* Swap front and back buffers */
 

@@ -3,5 +3,6 @@
 
 void drawGround(float size, int divisions);
 void displayTriangle();
+void displaySquare();
 
 #endif
