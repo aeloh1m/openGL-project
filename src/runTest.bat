@@ -3,7 +3,7 @@ rem Set the directory containing the .bat file as the working directory
 cd /d "%~dp0"
 
 rem Compile the source code
-gcc -I..\include -L..\lib -o main.exe main.c -lglfw3 -lgdi32 -lopengl32
+gcc -I..\include -L..\lib -o main.exe main.c world\world.c -lglfw3 -lgdi32 -lopengl32
 
 rem Check for compilation errors
 if %ERRORLEVEL% NEQ 0 (

@@ -1,10 +1,9 @@
-#include "..\include\GLFW\glfw3.h"
-#include <GL/gl.h>
-#include <stdio.h>
+#include "state.h"
+#include "world/world.h"
 
 int main(void)
 {
-    GLFWwindow* window;
+    GLFWwindow *window;
 
     /* Initialize the library */
     if (!glfwInit())
@@ -25,14 +24,11 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
 
-        glBegin(GL_TRIANGLES);
-        glVertex2f(0.9f, -0.9f);
-        glVertex2f(0.0f, 0.9f);
-        glVertex2f(0.9f, -0.0f);
-        glEnd();
+        displayTriangle();
+
         /* Swap front and back buffers */
+
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
