@@ -6,6 +6,7 @@
 #include "..\include\CGLM\cglm.h"
 #include "world\world.h"
 #include "shader\shader.h"
+#include "camera\camera.h"
 #include <GL/gl.h>
 #include <stdio.h>
 

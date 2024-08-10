@@ -1,9 +1,8 @@
 #include "state.h"
 
 // Function prototypes
-// Function prototypes
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void processInput(GLFWwindow *window, Camera *camera);
 
 int main()
 {
@@ -15,7 +14,7 @@ int main()
     }
 
     // Create a windowed mode window and its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Project", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(800, 600, "OpenGL Project", NULL, NULL);
     if (!window)
     {
         fprintf(stderr, "Failed to create GLFW window\n");
@@ -37,6 +36,9 @@ int main()
     // Initialize GL settings
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
+    Camera camera;
+    initCamera(&camera, 800.0f, 600.0f);
+
     // Set up shaders
     GLuint shaderProgram = createShaderProgram("../vertex_shader.glsl", "../fragment_shader.glsl");
     if (shaderProgram == 0)
@@ -51,12 +53,16 @@ int main()
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        // Input
-        processInput(window);
+        // Update camera based on input
+        processInput(window, &camera);
+
+        // Update the camera matrix
+        updateCamera(&camera); // No need for width and height
+        applyCamera(&camera, shaderProgram);
 
         // Render
         glClear(GL_COLOR_BUFFER_BIT);
-        drawGround(shaderProgram); // or displayTriangle(); or displaySquare();
+        drawGround(shaderProgram); // or drawTriangle(shaderProgram);
 
         // Swap buffers and poll IO events
         glfwSwapBuffers(window);
@@ -69,14 +75,38 @@ int main()
 }
 
 // Process input function
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow *window, Camera *camera)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+    vec3 direction;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        glm_vec3_scale(camera->front, camera->speed, direction); // Move forward
+        glm_vec3_add(camera->position, direction, camera->position);
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        glm_vec3_scale(camera->front, camera->speed, direction); // Move backward
+        glm_vec3_sub(camera->position, direction, camera->position);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        glm_vec3_cross(camera->front, camera->up, direction); // Calculate the right vector
+        glm_normalize(direction);
+        glm_vec3_scale(direction, camera->speed, direction); // Move left
+        glm_vec3_sub(camera->position, direction, camera->position);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        glm_vec3_cross(camera->front, camera->up, direction); // Calculate the right vector
+        glm_normalize(direction);
+        glm_vec3_scale(direction, camera->speed, direction); // Move right
+        glm_vec3_add(camera->position, direction, camera->position);
+    }
 }
 
 // Resize callback function
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
