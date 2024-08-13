@@ -1,8 +1,11 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-void drawGround(float size, int divisions);
-void displayTriangle();
-void displaySquare();
+#include "..\state.h"
+
+void drawGround(GLuint shaderProgram);
+void displayTriangle(GLuint shaderProgram);
+void displaySquare(GLuint shaderProgram);
+void initBuffers();
 
 #endif

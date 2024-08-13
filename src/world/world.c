@@ -1,78 +1,49 @@
 #include "world.h" // Your world header
 #include "..\state.h"
 
-void drawGround(float size, int divisions)
-{
-    float halfSize = size / 2.0f;
-    float step = size / divisions;
+GLuint VBO, VAO, EBO;
 
-    glBegin(GL_QUADS);
-    for (int i = 0; i < divisions; ++i)
-    {
-        for (int j = 0; j < divisions; ++j)
-        {
-            float x = -halfSize + i * step;
-            float z = -halfSize + j * step;
+void initBuffers() {
+    GLfloat vertices[] = {
+        // Positions          // Colors
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  // Top Right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  // Bottom Right
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  // Bottom Left
+       -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f   // Top Left 
+    };
+    GLuint indices[] = {
+        0, 1, 3,   // First Triangle
+        1, 2, 3    // Second Triangle
+    };
+    
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-            glColor3f(0.3f, 0.8f, 0.3f); // Green color for the ground
+    glBindVertexArray(VAO);
 
-            glVertex3f(x, 0.0f, z);               // Bottom left
-            glVertex3f(x + step, 0.0f, z);        // Bottom right
-            glVertex3f(x + step, 0.0f, z + step); // Top right
-            glVertex3f(x, 0.0f, z + step);        // Top left
-        }
-    }
-    glEnd();
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+    glBindVertexArray(0); 
 }
 
-// Display a Triangle ah
-void displayTriangle()
-{
+void drawGround(GLuint shaderProgram) {
+    glUseProgram(shaderProgram);
 
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glBegin(GL_TRIANGLES);
-
-    // First vertex (Red)
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex2f(0.9f, -0.9f);
-
-    // Second vertex (Green)
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex2f(0.0f, 0.9f);
-
-    // Third vertex (Blue)
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex2f(0.9f, -0.0f);
-
-    glEnd();
-    /* Swap front and back buffers */
-
-}
-
-void displaySquare()
-{
-
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glBegin(GL_QUADS);
-
-    // First vertex (Red)
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex2f(0.0f, 0.0f);
-
-    // Second vertex (Green)
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex2f(-0.5f, 0.0f);
-
-    // Third vertex (Blue)
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex2f(-0.5f, -0.5f);
-
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex2f(0.0f, -0.5f);
-
-    glEnd();
-    /* Swap front and back buffers */
-
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
