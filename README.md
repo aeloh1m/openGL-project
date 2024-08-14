@@ -15,7 +15,7 @@ Below is the current state of the project, showcasing the progress and features 
 ## Features
 
 - Basic OpenGL setup
-- Camera movement with mouse control
+- Camera movement with keyboard
 - Simple shaders and rendering setup
 - Environment for further game development
 
